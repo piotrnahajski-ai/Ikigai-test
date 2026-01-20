@@ -1,267 +1,118 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ikigai Career Assessment & Action Plan</title>
+    <title>Ikigai Interactive Career Architect</title>
     <style>
         :root {
             --primary: #2d3436;
             --accent: #0984e3;
             --bg: #f0f2f5;
             --card: #ffffff;
-            --success-bg: #d4edda;
-            --success-text: #155724;
-            --danger-bg: #f8d7da;
-            --danger-text: #721c24;
+            --success: #27ae60;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--primary); line-height: 1.6; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: var(--card); padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: var(--primary); }
-        h3 { margin-top: 0; }
-        .intro { text-align: center; margin-bottom: 40px; color: #636e72; }
-        .section-title { background: #e9ecef; padding: 15px; border-radius: 8px; margin-top: 40px; font-weight: bold; font-size: 1.2rem; color: var(--accent); }
-        .question { margin: 25px 0; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        .question p { font-weight: 500; margin-bottom: 10px; }
-        .options { display: flex; justify-content: space-between; align-items: center; }
-        .options label { font-size: 0.9rem; color: #b2bec3; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--primary); line-height: 1.6; padding: 10px; }
+        .container { max-width: 850px; margin: 20px auto; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; }
+        .section-title { background: #e9ecef; padding: 12px; border-radius: 8px; margin: 25px 0 10px; font-weight: bold; color: var(--accent); }
+        .question { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .scale-group { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
         
-        /* Radio Button Styling */
-        .scale-group { display: flex; gap: 15px; align-items: center; }
-        .scale-item { display: flex; flex-direction: column; align-items: center; }
-        input[type=radio] { transform: scale(1.2); margin-bottom: 5px; cursor: pointer; }
+        /* Results Styling */
+        #results { display: none; animation: fadeIn 0.5s; }
+        .bar-wrapper { cursor: pointer; margin-bottom: 15px; padding: 10px; border-radius: 8px; transition: background 0.2s; border: 1px solid transparent; }
+        .bar-wrapper:hover { background: #f8f9fa; border-color: #dee2e6; }
+        .chart-bar-bg { background: #dfe6e9; border-radius: 10px; height: 24px; overflow: hidden; margin-top: 5px; }
+        .chart-bar-fill { height: 100%; width: 0%; transition: width 1s; }
         
-        /* Buttons */
-        .btn-main { display: block; width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 40px; transition: background 0.3s; }
-        .btn-main:hover { background: #0773c5; }
-        .btn-reset { background: #636e72; margin-top: 20px; }
-        .btn-reset:hover { background: #4b5457; }
+        /* Interactive Plan Sections */
+        .plan-details { display: none; background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 10px 0 20px; }
+        .plan-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; padding: 10px; border-radius: 5px; }
+        .plan-item:hover { background: #f1f8ff; }
+        .plan-item input[type="checkbox"] { transform: scale(1.4); margin-top: 5px; cursor: pointer; }
+        .tag { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; margin-left: 5px; text-transform: uppercase; }
+        .easy { background: #d4edda; color: #155724; }
+        .hard { background: #f8d7da; color: #721c24; }
 
-        /* Results Section */
-        #results { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
-        .chart-container { margin-bottom: 30px; }
-        .chart-label { font-weight: bold; margin-bottom: 5px; display: block; }
-        .chart-bar-bg { background: #dfe6e9; border-radius: 10px; height: 25px; overflow: hidden; }
-        .chart-bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width 1s ease-in-out; }
+        /* Buttons & Inputs */
+        .btn-main { display: block; width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .btn-main:hover { opacity: 0.9; }
+        .btn-report { background: #6c5ce7; margin-top: 30px; }
+        .email-input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; margin-top: 10px; box-sizing: border-box; font-size: 1rem; }
         
-        /* Action Plan Styling */
-        .priority-box { padding: 30px; border-radius: 12px; margin-top: 30px; border-left: 6px solid var(--accent); background: #f8f9fa; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .plan-goal { font-style: italic; color: #636e72; margin-bottom: 20px; }
-        .plan-list { text-align: left; padding-left: 20px; }
-        .plan-list li { margin-bottom: 20px; }
-        .plan-list strong { color: var(--accent); }
-        
-        /* Difficulty Tags */
-        .tag { font-size: 0.75rem; font-weight: bold; padding: 3px 8px; border-radius: 12px; margin-left: 8px; text-transform: uppercase; vertical-align: middle; }
-        .tag.easy { background: var(--success-bg); color: var(--success-text); }
-        .tag.hard { background: var(--danger-bg); color: var(--danger-text); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .instruction-hint { font-size: 0.85rem; color: #636e72; text-align: center; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>The Ikigai Discovery Tool</h1>
-    <p class="intro">Discover the intersection of what you love, what you are good at, what the world needs, and what you can be paid for. Rate each statement honestly to reveal your path.</p>
-
+    <h1>Ikigai Career Architect</h1>
+    
     <form id="quizForm">
-        <div class="section-title">Axis 1: What You Love (Passion & Mission)</div>
-        <div id="axis1-container"></div>
-
-        <div class="section-title">Axis 2: What You Are Good At (Passion & Profession)</div>
-        <div id="axis2-container"></div>
-
-        <div class="section-title">Axis 3: What The World Needs (Mission & Vocation)</div>
-        <div id="axis3-container"></div>
-
-        <div class="section-title">Axis 4: What You Can Be Paid For (Profession & Vocation)</div>
-        <div id="axis4-container"></div>
-
-        <button type="button" class="btn-main" onclick="calculateScore()">Reveal My Ikigai Score & Action Plan</button>
+        <p style="text-align: center; color: #636e72;">Rate 20 statements to build your custom roadmap.</p>
+        <div id="questions-root"></div>
+        <button type="button" class="btn-main" onclick="calculateScore()">Analyze My Career</button>
     </form>
 
     <div id="results">
-        <h2>Your Ikigai Profile</h2>
+        <h2>Your Career Alignment Profile</h2>
+        <p class="instruction-hint">👇 Click any bar below to see suggestions and select actions for your report.</p>
         <div id="scores-display"></div>
-        <div id="action-plan"></div>
-        <button class="btn-main btn-reset" onclick="window.scrollTo(0,0); window.location.reload();">Retake Assessment</button>
+
+        <div id="report-section" style="margin-top: 40px; border-top: 2px solid #eee; padding-top: 20px;">
+            <h3>Generate Your Final Report</h3>
+            <p>Enter your email to receive your custom selected action items.</p>
+            <input type="email" id="userEmail" class="email-input" placeholder="yourname@example.com">
+            <button class="btn-main btn-report" onclick="sendReport()">Generate & Email My Roadmap</button>
+            <button class="btn-main" style="background:#b2bec3" onclick="window.location.reload()">Reset Test</button>
+        </div>
     </div>
 </div>
 
 <script>
+    const axisData = {
+        1: { title: "What You Love", color: "#ff7675", steps: [
+            { id: "l1", diff: "easy", time: "Days 1-7", text: "Start a 5-Min Energy Log to track daily drains vs. fuels." },
+            { id: "l2", diff: "easy", time: "Days 8-14", text: "Meeting Declutter: Identify 1 recurring meeting to delegate/skip." },
+            { id: "l3", diff: "med", time: "Days 15-30", text: "20% Curiosity Block: Schedule 2 hours for 'Scientific Play' weekly." },
+            { id: "l4", diff: "med", time: "Days 31-45", text: "Job Crafting: Pitch a trade-off of 1 'drained' task for 1 'love' task." },
+            { id: "l5", diff: "hard", time: "Days 46-75", text: "Internal Pivot: Shadow a department that excites you." },
+            { id: "l6", diff: "hard", time: "Days 76-90", text: "Portfolio Shift: Update CV to highlight passion-led projects." }
+        ]},
+        2: { title: "What You Are Good At", color: "#74b9ff", steps: [
+            { id: "s1", diff: "easy", time: "Days 1-7", text: "Strength Audit: Ask 3 colleagues what your 'superpower' is." },
+            { id: "s2", diff: "easy", time: "Days 8-14", text: "Tool Mastery: Learn 3 new 'Power User' shortcuts for your main software." },
+            { id: "s3", diff: "med", time: "Days 15-30", text: "Feedback Loop: Ask for a specific critique to move a project from B+ to A+." },
+            { id: "s4", diff: "med", time: "Days 31-60", text: "Micro-Credential: Get 1 high-authority technical certification." },
+            { id: "s5", diff: "hard", time: "Days 61-75", text: "Lunch & Learn: Teach a 30-min skill session to your team." },
+            { id: "s6", diff: "hard", time: "Days 76-90", text: "The Stretch: Volunteer for a project 20% beyond your comfort zone." }
+        ]},
+        3: { title: "What The World Needs", color: "#55efc4", steps: [
+            { id: "n1", diff: "easy", time: "Days 1-7", text: "Impact Trace: Map your daily task to a real human benefit." },
+            { id: "n2", diff: "easy", time: "Days 8-14", text: "User Interview: Talk to a client about how your product helped them." },
+            { id: "n3", diff: "med", time: "Days 15-30", text: "Value Check: Express one core personal value through a work task." },
+            { id: "n4", diff: "med", time: "Days 31-60", text: "Social Initiative: Propose a team volunteering or pro-bono hour." },
+            { id: "n5", diff: "hard", time: "Days 61-75", text: "Ethical Audit: Identify and propose a fix for an unsustainable process." },
+            { id: "n6", diff: "hard", time: "Days 76-90", text: "Mission Pivot: Network with 'B-Corp' or net-positive organizations." }
+        ]},
+        4: { title: "What You Can Be Paid For", color: "#ffeaa7", steps: [
+            { id: "p1", diff: "easy", time: "Days 1-7", text: "Salary Snapshot: Research market rates for your role (Glassdoor/Payscale)." },
+            { id: "p2", diff: "easy", time: "Days 8-14", text: "Wins Folder: Document every win, positive email, and metric hit." },
+            { id: "p3", diff: "med", time: "Days 15-30", text: "Market Intel: Ask a recruiter which 3 skills are paying the most now." },
+            { id: "p4", diff: "med", time: "Days 31-60", text: "Efficiency Proposal: Propose a way to save the company measurable money." },
+            { id: "p5", diff: "hard", time: "Days 61-75", text: "Negotiation: Schedule a review using your 'Wins' folder as evidence." },
+            { id: "p6", diff: "hard", time: "Days 76-90", text: "The Market Test: Apply for 2 'stretch' roles to verify your value." }
+        ]}
+    };
+
     const questions = [
-        // Axis 1: Love
         { text: "I look forward to starting my work most mornings.", axis: 1 },
-        { text: "The core tasks of my job align with my natural curiosities.", axis: 1 },
-        { text: "I frequently experience 'flow'—losing track of time because I'm engaged.", axis: 1 },
-        { text: "I feel a distinct sense of energy or spark when discussing my work.", axis: 1 },
-        { text: "Even if I won the lottery, I would still want to do parts of this job.", axis: 1 },
-        // Axis 2: Skill
-        { text: "I have a high level of technical mastery or expertise in my role.", axis: 2 },
-        { text: "I am often the 'go-to' person when colleagues have difficult problems.", axis: 2 },
-        { text: "I find it relatively easy to learn new skills required for my field.", axis: 2 },
-        { text: "My natural talents (e.g., creativity, logic, empathy) are used daily.", axis: 2 },
-        { text: "I feel competent and confident handling the core responsibilities of my role.", axis: 2 },
-        // Axis 3: Need
-        { text: "I can clearly see how my work positively impacts others or society.", axis: 3 },
-        { text: "I believe the problem my job solves is a meaningful one.", axis: 3 },
-        { text: "My work aligns with my personal ethics and values.", axis: 3 },
-        { text: "If my job disappeared tomorrow, there would be a negative impact on others.", axis: 3 },
-        { text: "I feel connected to the end-user or beneficiary of my work.", axis: 3 },
-        // Axis 4: Paid
-        { text: "My current income allows me to live comfortably and meet financial goals.", axis: 4 },
-        { text: "I feel my compensation is fair compared to the market rate.", axis: 4 },
-        { text: "There is steady or growing market demand for the skills I provide.", axis: 4 },
-        { text: "My job offers good benefits or long-term financial security.", axis: 4 },
-        { text: "I am rarely stressed about my immediate financial stability.", axis: 4 }
-    ];
-
-    // Populate Questions with a better UI layout
-    questions.forEach((q, index) => {
-        const container = document.getElementById(`axis${q.axis}-container`);
-        const qDiv = document.createElement('div');
-        qDiv.className = 'question';
-        qDiv.innerHTML = `
-            <p>${index + 1}. ${q.text}</p>
-            <div class="options">
-                <label>Strongly Disagree</label>
-                <div class="scale-group">
-                    ${[1, 2, 3, 4, 5].map(num => `
-                        <div class="scale-item">
-                            <input type="radio" name="q${index}" value="${num}" id="q${index}-${num}" required>
-                            <label for="q${index}-${num}">${num}</label>
-                        </div>
-                    `).join('')}
-                </div>
-                <label>Strongly Agree</label>
-            </div>
-        `;
-        container.appendChild(qDiv);
-    });
-
-    function calculateScore() {
-        let scores = { 1: 0, 2: 0, 3: 0, 4: 0 };
-        let allAnswered = true;
-
-        questions.forEach((q, index) => {
-            const selected = document.querySelector(`input[name="q${index}"]:checked`);
-            if (selected) {
-                scores[q.axis] += parseInt(selected.value);
-            } else {
-                allAnswered = false;
-            }
-        });
-
-        if (!allAnswered) {
-            alert("Please ensure you have answered all 20 questions to get an accurate result.");
-            return;
-        }
-
-        displayResults(scores);
-    }
-
-    function displayResults(scores) {
-        document.getElementById('quizForm').style.display = 'none';
-        const resultsDiv = document.getElementById('results');
-        const scoresDisplay = document.getElementById('scores-display');
-        const actionPlan = document.getElementById('action-plan');
-        resultsDiv.style.display = 'block';
-        window.scrollTo(0,0);
-
-        const axisNames = { 
-            1: "What You Love (Passion)", 
-            2: "What You Are Good At (Mastery)", 
-            3: "What The World Needs (Purpose)", 
-            4: "What You Can Be Paid For (Wealth)" 
-        };
-
-        let html = '';
-        let lowestScore = 26; // Start higher than max possible score
-        let lowestAxis = null;
-
-        // Find lowest score first to handle ties (currently just picks the first lowest found)
-        for (let i = 1; i <= 4; i++) {
-            if (scores[i] < lowestScore) {
-                lowestScore = scores[i];
-                lowestAxis = i;
-            }
-        }
-
-        // Generate Charts
-        for (let i = 1; i <= 4; i++) {
-            const width = (scores[i] / 25) * 100;
-            let colorClass = scores[i] < 15 ? '#e74c3c' : (scores[i] < 20 ? '#f1c40f' : '#27ae60');
-            
-            html += `
-            <div class="chart-container">
-                <span class="chart-label">${axisNames[i]}: ${scores[i]} / 25</span>
-                <div class="chart-bar-bg">
-                    <div class="chart-bar-fill" style="width: ${width}%; background-color: ${colorClass}"></div>
-                </div>
-            </div>`;
-        }
-        scoresDisplay.innerHTML = html;
-
-        // Trigger animation after render
-        setTimeout(() => {
-            document.querySelectorAll('.chart-bar-fill').forEach(bar => {
-                bar.style.width = bar.getAttribute('style').split('width:')[1].split(';')[0];
-            });
-        }, 100);
-
-
-        // --- DETAILED ACTION PLANS ---
-        const plans = {
-            1: `<h3>Your Priority: The Passion Plan (Axis 1)</h3>
-                <p class="plan-goal">Goal: Re-ignite the "spark" and reduce emotional drainage.</p>
-                <ol class="plan-list">
-                    <li><strong>The 5-Minute Energy Log (Days 1–7)</strong> <span class="tag easy">Easiest</span><br>Every time you finish a task, mark it (+) or (-) in a notebook to collect data on what drains vs. fuels you. Don't analyze yet, just track.</li>
-                    <li><strong>The "Meeting Declutter" (Days 8–14)</strong><br>Identify one recurring, low-engagement meeting. Decline it, delegate it, or request a "digest" version to save mental energy.</li>
-                    <li><strong>The 20% Curiosity Block (Days 15–30)</strong><br>Schedule two hours a week for "Scientific Play." Research a topic in your industry that genuinely interests you, outside your KPIs.</li>
-                    <li><strong>The Job Crafting Pitch (Days 31–45)</strong><br>Based on your Energy Log, propose trading a "Drained" task for more of a "Love" task with your manager.</li>
-                    <li><strong>The Internal Pivot (Days 46–75)</strong><br>Request a "shadow day" with a different department that excites you to see if a horizontal move is viable.</li>
-                    <li><strong>The Portfolio Shift (Days 76–90)</strong> <span class="tag hard">Hardest</span><br>Update your LinkedIn and CV to highlight projects you *loved*, and start interviewing for roles that center on those activities.</li>
-                </ol>`,
-            2: `<h3>Your Priority: The Mastery Plan (Axis 2)</h3>
-                <p class="plan-goal">Goal: Move from feeling like an "imposter" to an in-demand expert.</p>
-                <ol class="plan-list">
-                    <li><strong>The Strength Audit (Days 1–7)</strong> <span class="tag easy">Easiest</span><br>Ask three colleagues: "What is one thing I do that makes your job easier?" Their answers reveal your hidden superpowers.</li>
-                    <li><strong>Tool Optimization (Days 8–14)</strong><br>Identify your primary software/tool. Learn three "Power User" shortcuts or features you didn't know existed for immediate efficiency gains.</li>
-                    <li><strong>The Feedback Loop (Days 15–30)</strong><br>After a project, ask your lead: "What is one specific thing I could have done to take this from a B+ to an A+?" Remove the guesswork.</li>
-                    <li><strong>The Micro-Credential (Days 31–60)</strong><br>Complete one high-authority certification that fills a specific gap in your current technical stack.</li>
-                    <li><strong>The "Lunch & Learn" (Days 61–75)</strong><br>Host a 30-minute session teaching your team a skill you’ve mastered. Teaching cements your status as an expert.</li>
-                    <li><strong>The High-Stakes Stretch (Days 76–90)</strong> <span class="tag hard">Hardest</span><br>Volunteer to lead a project that is slightly outside your comfort zone. This "forced growth" causes the biggest jumps in skill.</li>
-                </ol>`,
-            3: `<h3>Your Priority: The Purpose Plan (Axis 3)</h3>
-                <p class="plan-goal">Goal: Connect your daily "grind" to a meaningful "why."</p>
-                <ol class="plan-list">
-                    <li><strong>The Impact Trace (Days 1–7)</strong> <span class="tag easy">Easiest</span><br>Write down your primary task. Draw lines connecting it until you reach how it improves a real person's life.</li>
-                    <li><strong>The "User" Interview (Days 8–14)</strong><br>Spend 15 minutes talking to a client or customer-facing colleague. Ask for a story about someone whose life was improved by your product.</li>
-                    <li><strong>Values Alignment Check (Days 15–30)</strong><br>Pick your top three personal values. Find one way to express each value through a specific work interaction this week.</li>
-                    <li><strong>The Social Initiative (Days 31–60)</strong><br>Identify a charity that aligns with your company’s mission. Propose a small-scale team volunteering day or "pro-bono" hour.</li>
-                    <li><strong>The Ethical Audit (Days 61–75)</strong><br>Identify one process in your role that could be made more sustainable or equitable and propose the change.</li>
-                    <li><strong>The Mission-Driven Pivot (Days 76–90)</strong> <span class="tag hard">Hardest</span><br>If your industry feels "net-negative," begin networking specifically with organizations whose "Why" matches yours.</li>
-                </ol>`,
-            4: `<h3>Your Priority: The Wealth Plan (Axis 4)</h3>
-                <p class="plan-goal">Goal: Maximize your financial ROI and market leverage.</p>
-                <ol class="plan-list">
-                    <li><strong>The Salary Snapshot (Days 1–7)</strong> <span class="tag easy">Easiest</span><br>Visit Glassdoor, Payscale, and Levels.fyi to find the 25th, 50th, and 75th percentile pay for your role in your city.</li>
-                    <li><strong>The "Wins" Folder (Days 8–14)</strong><br>Start a document. Copy-paste every positive email, completed project, and metric hit. This is evidence for future negotiations.</li>
-                    <li><strong>Recruiter Outreach (Days 15–30)</strong><br>Ask a recruiter in your niche: "What are the 3 skills seeing in the highest-paid candidates for my role right now?"</li>
-                    <li><strong>The Efficiency Proposal (Days 31–60)</strong><br>Propose a way to save the company money or time. Quantifying your value makes asking for a raise much easier.</li>
-                    <li><strong>The Negotiation Conversation (Days 61–75)</strong><br>Schedule a formal review. Use your "Wins" folder and market data to ask for a market-rate adjustment.</li>
-                    <li><strong>The Market Test (Days 76–90)</strong> <span class="tag hard">Hardest</span><br>Apply for two roles at a competitor. An external offer is the only 100% accurate measure of your current market value.</li>
-                </ol>`
-        };
-
-        actionPlan.innerHTML = `<div class="priority-box">
-            ${plans[lowestAxis]}
-        </div>`;
-    }
-</script>
-
-</body>
-</html>
-
+        { text: "The core tasks of my job align with my curiosities.", axis: 1 },
+        { text: "I frequently experience 'flow' (losing track of time).", axis: 1 },
+        { text: "I feel energy when discussing my work with others.", axis: 1 },
+        { text: "If I won the lottery, I'd still do parts of this job.", axis: 1 },
+        { text: "I have a high level of mastery in my role.", axis: 2 },
+        { text: "I am the 'go-to' person for difficult problems.", axis: 2 },
+        { text: "I find it easy to learn new skills in my field.", axis: 2
