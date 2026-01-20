@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ikigai Career Architect</title>
+    <title>Ikigai Career Analyser</title>
     <style>
         :root {
             --primary: #2d3436;
@@ -12,50 +12,66 @@
             --card: #ffffff;
             --error: #ff7675;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--primary); padding: 10px; line-height: 1.6; }
-        .container { max-width: 800px; margin: 20px auto; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--primary); padding: 10px; line-height: 1.6; }
+        .container { max-width: 850px; margin: 20px auto; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
         /* Welcome Box */
-        .welcome-box { background: #e1f5fe; border: 1px solid #b3e5fc; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
-        .welcome-box h2 { margin-top: 0; color: #0277bd; }
+        .welcome-box { background: #e1f5fe; border: 1px solid #b3e5fc; padding: 25px; border-radius: 12px; margin-bottom: 30px; }
+        .welcome-box h2 { margin-top: 0; color: #0277bd; font-size: 1.5rem; }
+        .welcome-box p { margin-bottom: 15px; }
+        .ikigai-brief { font-size: 0.95rem; border-left: 4px solid #0277bd; padding-left: 15px; margin: 15px 0; color: #444; }
 
-        .section-title { background: #eee; padding: 12px; border-radius: 8px; margin: 30px 0 10px; font-weight: bold; color: var(--accent); }
-        .question { padding: 15px; margin-bottom: 10px; border: 2px solid transparent; border-radius: 10px; transition: 0.3s; }
+        .section-title { background: #f1f3f5; padding: 15px; border-radius: 8px; margin: 40px 0 15px; font-weight: bold; color: var(--accent); font-size: 1.25rem; border-bottom: 2px solid #dee2e6; }
+        .question { padding: 20px; margin-bottom: 15px; border: 2px solid transparent; border-radius: 12px; transition: 0.3s; background: #fff; }
         .question.unanswered { border-color: var(--error); background: #fff5f5; }
+        .question p { font-weight: 600; margin-bottom: 20px; }
         
-        .scale-group { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; max-width: 450px; margin: 10px auto; }
-        .scale-item { text-align: center; cursor: pointer; }
-        .scale-item label { display: block; font-weight: bold; cursor: pointer; }
-        input[type="radio"] { transform: scale(1.4); cursor: pointer; }
+        .scale-group { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; max-width: 500px; margin: 10px auto; }
+        .scale-item { text-align: center; cursor: pointer; flex: 1; }
+        .scale-item label { display: block; font-weight: bold; cursor: pointer; padding: 10px 0; }
+        input[type="radio"] { transform: scale(1.5); cursor: pointer; }
 
-        #results { display: none; padding-top: 20px; }
-        .bar-wrapper { cursor: pointer; margin-bottom: 10px; padding: 15px; border: 1px solid #ddd; border-radius: 10px; background: #fff; }
-        .bar-wrapper:hover { border-color: var(--accent); }
-        .chart-bar-bg { background: #eee; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
+        #results { display: none; padding-top: 30px; border-top: 2px solid #eee; margin-top: 30px; }
+        .bar-wrapper { cursor: pointer; margin-bottom: 12px; padding: 18px; border: 1px solid #ddd; border-radius: 12px; background: #fff; transition: transform 0.2s; }
+        .bar-wrapper:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .chart-bar-bg { background: #eee; height: 24px; border-radius: 12px; overflow: hidden; margin-top: 10px; }
         .chart-bar-fill { height: 100%; width: 0%; transition: width 1s ease-in-out; }
 
-        .plan-details { display: none; padding: 15px; border: 1px solid #eee; border-top: 0; border-radius: 0 0 10px 10px; margin-bottom: 20px; background: #fafafa; }
-        .plan-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px; cursor: pointer; }
-        .plan-item input { margin-top: 5px; transform: scale(1.3); }
+        .plan-details { display: none; padding: 20px; border: 1px solid #eee; border-top: 0; border-radius: 0 0 12px 12px; margin-bottom: 25px; background: #fafafa; }
+        .plan-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; cursor: pointer; border-radius: 8px; transition: background 0.2s; }
+        .plan-item:hover { background: #eef2f7; }
+        .plan-item input { margin-top: 6px; transform: scale(1.4); }
 
-        .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-analyze { background: var(--accent); margin-top: 20px; }
-        .btn-analyze:active { transform: scale(0.98); }
+        .btn { display: block; width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: white; transition: 0.3s; }
+        .btn-analyze { background: var(--accent); margin-top: 30px; box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3); }
+        .btn-analyze:hover { background: #0773c5; }
         .btn-report { background: #6c5ce7; margin-top: 20px; }
-        .email-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; margin-top: 10px; box-sizing: border-box; }
+        .email-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; margin-top: 10px; box-sizing: border-box; font-size: 1rem; }
         
-        .tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 5px; font-weight: bold; text-transform: uppercase; }
+        .tag { font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; font-weight: bold; text-transform: uppercase; margin-right: 8px; }
         .easy { background: #c8e6c9; color: #2e7d32; }
         .hard { background: #ffcdd2; color: #c62828; }
+        .med { background: #fff9c4; color: #f57f17; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="welcome-box">
-        <h2>Welcome to the Beta Test! 👋</h2>
-        <p>This tool helps you analyze your career through the lens of <strong>Ikigai</strong>. Answer the 20 questions below to see which areas of your work life are flourishing and which need a boost.</p>
-        <p><strong>Instructions:</strong> Once you see your scores, click on the bars to reveal specific action steps. Select the ones that resonate with you to generate your personal roadmap!</p>
+        <h2>Ikigai Career Analyser 🌸</h2>
+        <p><strong>Ikigai</strong> (生き甲斐) is a Japanese concept that translates to <em>"a reason for being."</em> It is the sweet spot where your passion, mission, vocation, and profession overlap.</p>
+        
+        <div class="ikigai-brief">
+            Finding your Ikigai requires balancing four distinct areas of life:
+            <ul>
+                <li><strong>What you love:</strong> Your source of joy and energy.</li>
+                <li><strong>What you are good at:</strong> Your unique talents and mastery.</li>
+                <li><strong>What the world needs:</strong> Your contribution to the greater good.</li>
+                <li><strong>What you can be paid for:</strong> Your financial sustainability and market value.</li>
+            </ul>
+        </div>
+        
+        <p>Complete the assessment below to identify which of these circles is currently out of balance in your career. After analyzing, you will be able to build a <strong>personalized 90-day roadmap</strong> to close the gaps.</p>
     </div>
 
     <form id="quizForm">
@@ -64,77 +80,78 @@
     </form>
 
     <div id="results">
-        <h2>Your Career Roadmap</h2>
-        <p style="text-align: center;"><em>Click the bars below to expand action plans.</em></p>
+        <h2>Your Personal Ikigai Profile</h2>
+        <p style="text-align: center; margin-bottom: 25px;"><em>Below are your scores out of 25. <strong>Click any bar</strong> to expand the suggested action plan for that area.</em></p>
         
         <div id="scores-display"></div>
 
-        <div style="margin-top: 40px; border-top: 2px solid #eee; padding-top: 20px;">
-            <h3>Receive Your Report</h3>
+        <div style="margin-top: 50px; border-top: 2px solid #eee; padding-top: 30px; background: #fff; padding: 25px; border-radius: 12px;">
+            <h3>Generate Your Roadmap Report</h3>
+            <p>Select the tasks above that you wish to commit to, then enter your email to receive a formatted summary.</p>
             <input type="email" id="userEmail" class="email-input" placeholder="Enter your email address">
-            <button type="button" id="reportBtn" class="btn btn-report">Email My Selected Roadmap</button>
-            <button type="button" class="btn" style="background: #999; margin-top: 10px;" onclick="location.reload()">Start Over</button>
+            <button type="button" id="reportBtn" class="btn btn-report">Email My Personal Roadmap</button>
+            <button type="button" class="btn" style="background: #b2bec3; margin-top: 15px;" onclick="location.reload()">Reset & Restart</button>
         </div>
     </div>
 </div>
 
 <script>
     const axisInfo = {
-        1: { name: "What You Love", color: "#ff7675", steps: [
+        1: { name: "What You Love (Passion/Mission)", color: "#ff7675", steps: [
             { time: "Week 1", diff: "easy", txt: "Start a 5-Min Energy Log to track daily drains vs. fuels." },
             { time: "Week 2", diff: "easy", txt: "Identify 1 recurring meeting to delegate or skip." },
-            { time: "Month 1", diff: "med", txt: "Schedule 2 hours for 'Scientific Play' weekly." },
-            { time: "Month 2", diff: "med", txt: "Pitch trading 1 'drained' task for 1 'love' task." },
-            { time: "Month 2", diff: "hard", txt: "Shadow a department that excites you." },
-            { time: "Month 3", diff: "hard", txt: "Update CV to highlight passion-led projects." }
+            { time: "Month 1", diff: "med", txt: "Schedule 2 hours for 'Scientific Play' weekly on a topic you love." },
+            { time: "Month 2", diff: "med", txt: "Pitch trading 1 'drained' task for 1 'love' task with your manager." },
+            { time: "Month 2", diff: "hard", txt: "Shadow a department or project that genuinely excites you." },
+            { time: "Month 3", diff: "hard", txt: "Update your professional bio to highlight passion-led projects." }
         ]},
-        2: { name: "What You Are Good At", color: "#74b9ff", steps: [
-            { time: "Week 1", diff: "easy", txt: "Ask 3 colleagues what your 'superpower' is." },
-            { time: "Week 2", diff: "easy", txt: "Learn 3 new 'Power User' shortcuts for your core tools." },
-            { time: "Month 1", diff: "med", txt: "Ask for a critique to move a project from B+ to A+." },
-            { time: "Month 2", diff: "med", txt: "Get 1 high-authority technical certification." },
-            { time: "Month 2", diff: "hard", txt: "Teach a 30-min skill session to your team." },
-            { time: "Month 3", diff: "hard", txt: "Volunteer for a project 20% beyond your comfort zone." }
+        2: { name: "What You Are Good At (Passion/Profession)", color: "#74b9ff", steps: [
+            { time: "Week 1", diff: "easy", txt: "Ask 3 trusted colleagues what your unique 'superpower' is." },
+            { time: "Week 2", diff: "easy", txt: "Learn 3 new 'Power User' shortcuts for your primary software tools." },
+            { time: "Month 1", diff: "med", txt: "Ask for a critique to move a current project from 'Good' to 'Great'." },
+            { time: "Month 2", diff: "med", txt: "Enroll in 1 high-authority technical certification in your field." },
+            { time: "Month 2", diff: "hard", txt: "Host a 30-min skill-sharing session for your team." },
+            { time: "Month 3", diff: "hard", txt: "Volunteer for a stretch assignment 20% beyond your comfort zone." }
         ]},
-        3: { name: "What The World Needs", color: "#55efc4", steps: [
-            { time: "Week 1", diff: "easy", txt: "Map your daily task to a real human benefit." },
-            { time: "Week 2", diff: "easy", txt: "Talk to a client about how your product helped them." },
-            { time: "Month 1", diff: "med", txt: "Express 1 core personal value through a work task." },
-            { time: "Month 2", diff: "med", txt: "Propose a team volunteering or pro-bono hour." },
-            { time: "Month 2", diff: "hard", txt: "Propose a fix for an unsustainable process." },
-            { time: "Month 3", diff: "hard", txt: "Network with 'B-Corp' organizations." }
+        3: { name: "What The World Needs (Mission/Vocation)", color: "#55efc4", steps: [
+            { time: "Week 1", diff: "easy", txt: "Map a mundane daily task to a real-world human benefit." },
+            { time: "Week 2", diff: "easy", txt: "Interview a client/user about how your work helps them." },
+            { time: "Month 1", diff: "med", txt: "Intentionally express one personal value through a work interaction." },
+            { time: "Month 2", diff: "med", txt: "Propose a team volunteering day or a pro-bono consulting hour." },
+            { time: "Month 2", diff: "hard", txt: "Identify and propose a fix for an unsustainable company process." },
+            { time: "Month 3", diff: "hard", txt: "Connect with a non-profit to offer your professional skills." }
         ]},
-        4: { name: "What You Can Be Paid For", color: "#ffeaa7", steps: [
-            { time: "Week 1", diff: "easy", txt: "Research market rates for your role." },
-            { time: "Week 2", diff: "easy", txt: "Document every win, positive email, and metric hit." },
-            { time: "Month 1", diff: "med", txt: "Ask a recruiter which skills are paying most now." },
-            { time: "Month 2", diff: "med", txt: "Propose a way to save the company measurable money." },
-            { time: "Month 2", diff: "hard", txt: "Schedule a review using your 'Wins' folder as evidence." },
-            { time: "Month 3", diff: "hard", txt: "Apply for 2 'stretch' roles to verify your value." }
+        4: { name: "What You Can Be Paid For (Profession/Vocation)", color: "#ffeaa7", steps: [
+            { time: "Week 1", diff: "easy", txt: "Research current market rates for your specific role and location." },
+            { time: "Week 2", diff: "easy", txt: "Document every 'win', positive feedback, and metric hit this year." },
+            { time: "Month 1", diff: "med", txt: "Ask a recruiter which skills are currently commanding the highest pay." },
+            { time: "Month 2", diff: "med", txt: "Propose an efficiency fix that saves the company measurable money." },
+            { time: "Month 2", diff: "hard", txt: "Schedule a salary review using your 'Wins' folder as leverage." },
+            { time: "Month 3", diff: "hard", txt: "Apply for 2 roles at the next level to verify your market value." }
         ]}
     };
 
     const qs = [
         { t: "I look forward to starting my work most mornings.", a: 1 },
-        { t: "The core tasks of my job align with my curiosities.", a: 1 },
+        { t: "The core tasks of my job align with my natural curiosities.", a: 1 },
         { t: "I frequently experience 'flow' (losing track of time).", a: 1 },
-        { t: "I feel energy when discussing my work.", a: 1 },
-        { t: "If I won the lottery, I'd still do parts of this job.", a: 1 },
+        { t: "I feel energy when discussing my work with others.", a: 1 },
+        { t: "Even if I won the lottery, I'd still do parts of this job.", a: 1 },
         { t: "I have a high level of mastery in my role.", a: 2 },
-        { t: "I am the 'go-to' person for difficult problems.", a: 2 },
-        { t: "I find it easy to learn new skills in my field.", a: 2 },
-        { t: "My natural talents are used daily.", a: 2 },
-        { t: "I feel confident handling core responsibilities.", a: 2 },
-        { t: "My work positively impacts society.", a: 3 },
-        { t: "The problem my job solves is meaningful.", a: 3 },
-        { t: "My work aligns with my personal ethics.", a: 3 },
-        { t: "If my job disappeared, there would be a gap.", a: 3 },
-        { t: "I feel connected to the end-user of my work.", a: 3 },
-        { t: "My income allows me to live comfortably.", a: 4 },
-        { t: "My compensation is fair for my market.", a: 4 },
-        { t: "There is growing demand for my skills.", a: 4 },
-        { t: "My job offers good financial security.", a: 4 },
-        { t: "I am rarely stressed about my finances.", a: 4 }
+        { t: "I am often the 'go-to' person for difficult problems.", a: 2 },
+        { t: "I find it relatively easy to learn new skills in my field.", a: 2 },
+        { t: "My natural talents (logic, empathy, etc.) are used daily.", a: 2 },
+        { t: "I feel confident handling my core responsibilities.", a: 2 },
+        { t: "I can clearly see how my work positively impacts others.", a: 3 },
+        { t: "I believe the problem my job solves is a meaningful one.", a: 3 },
+        { t: "My work aligns with my personal ethics and values.", a: 3 },
+        { t: "If my job disappeared, there would be a negative impact.", a: 3 },
+        { t: "I feel connected to the end-user or beneficiary of my work.", a: 3 },
+        { t: "My current income allows me to live comfortably.", a: 4 },
+        { t: "I feel my compensation is fair compared to the market.", a: 4 },
+        { t: "There is steady or growing demand for the skills I provide.", a: 4 },
+        { t: "My job offers good long-term financial security.", a: 4 },
+        { t: "I am rarely stressed about my financial stability.", a: 4 }
     ];
 
     const root = document.getElementById('questions-root');
@@ -166,7 +183,7 @@
         }
 
         if(!valid) {
-            alert("Please answer all highlighted questions.");
+            alert("Please answer all highlighted questions before analyzing.");
             firstMiss.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
             showResults();
@@ -175,6 +192,7 @@
 
     function showResults() {
         document.getElementById('quizForm').style.display = 'none';
+        document.querySelector('.welcome-box').style.display = 'none';
         document.getElementById('results').style.display = 'block';
         window.scrollTo(0,0);
         const disp = document.getElementById('scores-display');
@@ -206,9 +224,10 @@
     document.getElementById('reportBtn').addEventListener('click', function() {
         const mail = document.getElementById('userEmail').value;
         const checks = document.querySelectorAll('input[type="checkbox"]:checked');
-        if(!mail || checks.length === 0) return alert("Enter email and select at least one action!");
+        if(!mail) return alert("Please enter your email address.");
+        if(checks.length === 0) return alert("Please select at least one action step to include in your roadmap!");
         
-        let body = `MY CAREER ROADMAP\n\nSCORES:\n`;
+        let body = `MY CAREER ROADMAP (Ikigai Career Analyser)\n\nSCORES:\n`;
         [1,2,3,4].forEach(a => body += `- ${axisInfo[a].name}: ${finalScores[a]}/25\n`);
         body += `\nSELECTED ACTIONS:\n`;
         checks.forEach(c => body += `[ ] (${c.dataset.a}) ${c.dataset.t}: ${c.dataset.x}\n`);
