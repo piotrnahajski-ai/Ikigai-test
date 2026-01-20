@@ -3,205 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ikigai Interactive Career Architect</title>
+    <title>Ikigai Career Architect - Beta</title>
     <style>
         :root {
             --primary: #2d3436;
             --accent: #0984e3;
             --bg: #f0f2f5;
             --card: #ffffff;
-            --success: #27ae60;
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--primary); line-height: 1.6; padding: 10px; }
         .container { max-width: 850px; margin: 20px auto; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h1, h2 { text-align: center; }
-        .section-title { background: #e9ecef; padding: 12px; border-radius: 8px; margin: 25px 0 10px; font-weight: bold; color: var(--accent); }
-        .question { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .scale-group { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        h1 { text-align: center; margin-bottom: 5px; }
+        .intro { text-align: center; color: #636e72; margin-bottom: 30px; }
+        .section-title { background: #e9ecef; padding: 12px; border-radius: 8px; margin: 30px 0 15px; font-weight: bold; color: var(--accent); font-size: 1.2rem; }
+        .question { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .question p { font-weight: 500; margin-bottom: 15px; }
         
-        /* Results Styling */
+        /* Scale UI */
+        .scale-group { display: flex; justify-content: space-between; align-items: center; max-width: 500px; margin: 0 auto; }
+        .scale-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .scale-item label { cursor: pointer; padding: 5px 10px; font-weight: bold; }
+        input[type="radio"] { transform: scale(1.5); cursor: pointer; margin-bottom: 8px; }
+
+        /* Results Display */
         #results { display: none; animation: fadeIn 0.5s; }
-        .bar-wrapper { cursor: pointer; margin-bottom: 15px; padding: 10px; border-radius: 8px; transition: background 0.2s; border: 1px solid transparent; }
-        .bar-wrapper:hover { background: #f8f9fa; border-color: #dee2e6; }
-        .chart-bar-bg { background: #dfe6e9; border-radius: 10px; height: 24px; overflow: hidden; margin-top: 5px; }
-        .chart-bar-fill { height: 100%; width: 0%; transition: width 1s; }
+        .bar-wrapper { cursor: pointer; margin-bottom: 15px; padding: 15px; border-radius: 10px; background: #fff; border: 1px solid #ddd; transition: all 0.2s; }
+        .bar-wrapper:hover { border-color: var(--accent); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .chart-bar-bg { background: #dfe6e9; border-radius: 10px; height: 24px; overflow: hidden; margin-top: 10px; }
+        .chart-bar-fill { height: 100%; width: 0%; transition: width 1s ease-in-out; }
         
-        /* Interactive Plan Sections */
-        .plan-details { display: none; background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin: 10px 0 20px; }
-        .plan-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; padding: 10px; border-radius: 5px; }
-        .plan-item:hover { background: #f1f8ff; }
-        .plan-item input[type="checkbox"] { transform: scale(1.4); margin-top: 5px; cursor: pointer; }
-        .tag { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; margin-left: 5px; text-transform: uppercase; }
+        /* Plan UI */
+        .plan-details { display: none; background: #fdfdfd; border: 1px solid #eee; padding: 20px; border-radius: 8px; margin: -10px 0 25px; border-top: none; }
+        .plan-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px; padding: 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; }
+        .plan-item:hover { background: #f1f8ff; border-color: #d1e9ff; }
+        .plan-item input[type="checkbox"] { transform: scale(1.5); margin-top: 4px; }
+        .tag { font-size: 0.7rem; font-weight: bold; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; }
         .easy { background: #d4edda; color: #155724; }
         .hard { background: #f8d7da; color: #721c24; }
 
-        /* Buttons & Inputs */
-        .btn-main { display: block; width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .btn-main:hover { opacity: 0.9; }
+        .btn-main { display: block; width: 100%; padding: 18px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; color: white; transition: opacity 0.2s; }
+        .btn-analyze { background: var(--accent); }
         .btn-report { background: #6c5ce7; margin-top: 30px; }
-        .email-input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; margin-top: 10px; box-sizing: border-box; font-size: 1rem; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .instruction-hint { font-size: 0.85rem; color: #636e72; text-align: center; margin-bottom: 10px; }
+        .btn-reset { background: #b2bec3; margin-top: 10px; }
+        .email-input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; margin-top: 10px; font-size: 1rem; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+[Image of the Ikigai Venn diagram]
+
 <div class="container">
     <h1>Ikigai Career Architect</h1>
+    <p class="intro">Discover your balance and build your custom 90-day roadmap.</p>
     
     <form id="quizForm">
-        <p style="text-align: center; color: #636e72;">Rate 20 statements to build your custom roadmap.</p>
         <div id="questions-root"></div>
-        <button type="button" class="btn-main" onclick="calculateScore()">Analyze My Career</button>
+        <button type="button" class="btn-main btn-analyze" onclick="calculateScore()">Analyze My Career</button>
     </form>
 
     <div id="results">
         <h2>Your Career Alignment Profile</h2>
-        <p class="instruction-hint">👇 Click any bar below to see suggestions and select actions for your report.</p>
+        <p style="text-align:center; color:#636e72;">👇 <strong>Click a bar</strong> to see suggestions and pick items for your report.</p>
         <div id="scores-display"></div>
 
         <div id="report-section" style="margin-top: 40px; border-top: 2px solid #eee; padding-top: 20px;">
-            <h3>Generate Your Final Report</h3>
-            <p>Enter your email to receive your custom selected action items.</p>
-            <input type="email" id="userEmail" class="email-input" placeholder="yourname@example.com">
-            <button class="btn-main btn-report" onclick="sendReport()">Generate & Email My Roadmap</button>
-            <button class="btn-main" style="background:#b2bec3" onclick="window.location.reload()">Reset Test</button>
+            <h3>Finalize Your Roadmap</h3>
+            <p>Enter your email to receive a formatted report of your selected actions.</p>
+            <input type="email" id="userEmail" class="email-input" placeholder="Enter your email address">
+            <button type="button" class="btn-main btn-report" onclick="sendReport()">Generate & Email My Roadmap</button>
+            <button type="button" class="btn-main btn-reset" onclick="window.location.reload()">Restart Assessment</button>
         </div>
     </div>
 </div>
 
 <script>
     const axisData = {
-        1: { title: "What You Love", color: "#ff7675", steps: [
-            { id: "l1", diff: "easy", time: "Days 1-7", text: "Start a 5-Min Energy Log to track daily drains vs. fuels." },
-            { id: "l2", diff: "easy", time: "Days 8-14", text: "Meeting Declutter: Identify 1 recurring meeting to delegate/skip." },
-            { id: "l3", diff: "med", time: "Days 15-30", text: "20% Curiosity Block: Schedule 2 hours for 'Scientific Play' weekly." },
-            { id: "l4", diff: "med", time: "Days 31-45", text: "Job Crafting: Pitch a trade-off of 1 'drained' task for 1 'love' task." },
-            { id: "l5", diff: "hard", time: "Days 46-75", text: "Internal Pivot: Shadow a department that excites you." },
-            { id: "l6", diff: "hard", time: "Days 76-90", text: "Portfolio Shift: Update CV to highlight passion-led projects." }
-        ]},
-        2: { title: "What You Are Good At", color: "#74b9ff", steps: [
-            { id: "s1", diff: "easy", time: "Days 1-7", text: "Strength Audit: Ask 3 colleagues what your 'superpower' is." },
-            { id: "s2", diff: "easy", time: "Days 8-14", text: "Tool Mastery: Learn 3 new 'Power User' shortcuts for your main software." },
-            { id: "s3", diff: "med", time: "Days 15-30", text: "Feedback Loop: Ask for a specific critique to move a project from B+ to A+." },
-            { id: "s4", diff: "med", time: "Days 31-60", text: "Micro-Credential: Get 1 high-authority technical certification." },
-            { id: "s5", diff: "hard", time: "Days 61-75", text: "Lunch & Learn: Teach a 30-min skill session to your team." },
-            { id: "s6", diff: "hard", time: "Days 76-90", text: "The Stretch: Volunteer for a project 20% beyond your comfort zone." }
-        ]},
-        3: { title: "What The World Needs", color: "#55efc4", steps: [
-            { id: "n1", diff: "easy", time: "Days 1-7", text: "Impact Trace: Map your daily task to a real human benefit." },
-            { id: "n2", diff: "easy", time: "Days 8-14", text: "User Interview: Talk to a client about how your product helped them." },
-            { id: "n3", diff: "med", time: "Days 15-30", text: "Value Check: Express one core personal value through a work task." },
-            { id: "n4", diff: "med", time: "Days 31-60", text: "Social Initiative: Propose a team volunteering or pro-bono hour." },
-            { id: "n5", diff: "hard", time: "Days 61-75", text: "Ethical Audit: Identify and propose a fix for an unsustainable process." },
-            { id: "n6", diff: "hard", time: "Days 76-90", text: "Mission Pivot: Network with 'B-Corp' or net-positive organizations." }
-        ]},
-        4: { title: "What You Can Be Paid For", color: "#ffeaa7", steps: [
-            { id: "p1", diff: "easy", time: "Days 1-7", text: "Salary Snapshot: Research market rates for your role (Glassdoor/Payscale)." },
-            { id: "p2", diff: "easy", time: "Days 8-14", text: "Wins Folder: Document every win, positive email, and metric hit." },
-            { id: "p3", diff: "med", time: "Days 15-30", text: "Market Intel: Ask a recruiter which 3 skills are paying the most now." },
-            { id: "p4", diff: "med", time: "Days 31-60", text: "Efficiency Proposal: Propose a way to save the company measurable money." },
-            { id: "p5", diff: "hard", time: "Days 61-75", text: "Negotiation: Schedule a review using your 'Wins' folder as evidence." },
-            { id: "p6", diff: "hard", time: "Days 76-90", text: "The Market Test: Apply for 2 'stretch' roles to verify your value." }
-        ]}
-    };
-
-    const questions = [
-        { text: "I look forward to starting my work most mornings.", axis: 1 },
-        { text: "The core tasks of my job align with my curiosities.", axis: 1 },
-        { text: "I frequently experience 'flow' (losing track of time).", axis: 1 },
-        { text: "I feel energy when discussing my work with others.", axis: 1 },
-        { text: "If I won the lottery, I'd still do parts of this job.", axis: 1 },
-        { text: "I have a high level of mastery in my role.", axis: 2 },
-        { text: "I am the 'go-to' person for difficult problems.", axis: 2 },
-        { text: "I find it easy to learn new skills in my field.", axis: 2 },
-        { text: "My natural talents are used daily.", axis: 2 },
-        { text: "I feel confident handling my core responsibilities.", axis: 2 },
-        { text: "My work positively impacts society/others.", axis: 3 },
-        { text: "The problem my job solves is meaningful.", axis: 3 },
-        { text: "My work aligns with my personal ethics.", axis: 3 },
-        { text: "If my job disappeared, there would be a gap.", axis: 3 },
-        { text: "I feel connected to the end-user of my work.", axis: 3 },
-        { text: "My income allows me to live comfortably.", axis: 4 },
-        { text: "My compensation is fair for my market.", axis: 4 },
-        { text: "There is growing demand for my skills.", axis: 4 },
-        { text: "My job offers good financial security.", axis: 4 },
-        { text: "I am rarely stressed about my finances.", axis: 4 }
-    ];
-
-    const root = document.getElementById('questions-root');
-    questions.forEach((q, i) => {
-        if(i % 5 === 0) root.innerHTML += `<div class="section-title">${axisData[q.axis].title}</div>`;
-        root.innerHTML += `<div class="question"><p>${i+1}. ${q.text}</p>
-            <div class="scale-group"><span>Disagree</span>
-            ${[1,2,3,4,5].map(n => `<input type="radio" name="q${i}" value="${n}" required>`).join('')}
-            <span>Agree</span></div></div>`;
-    });
-
-    let scores = {};
-
-    function calculateScore() {
-        for(let i=0; i<20; i++){
-            const val = document.querySelector(`input[name="q${i}"]:checked`);
-            if(!val) { alert("Please complete all questions!"); return; }
-            const axis = questions[i].axis;
-            scores[axis] = (scores[axis] || 0) + parseInt(val.value);
-        }
-        renderResults();
-    }
-
-    function renderResults() {
-        document.getElementById('quizForm').style.display = 'none';
-        document.getElementById('results').style.display = 'block';
-        const display = document.getElementById('scores-display');
-        display.innerHTML = '';
-
-        [1,2,3,4].forEach(axis => {
-            const pct = (scores[axis]/25)*100;
-            const item = axisData[axis];
-            display.innerHTML += `
-                <div class="bar-wrapper" onclick="togglePlan(${axis})">
-                    <strong>${item.title}: ${scores[axis]}/25</strong>
-                    <div class="chart-bar-bg"><div class="chart-bar-fill" style="width:${pct}%; background:${item.color}"></div></div>
-                </div>
-                <div id="plan-${axis}" class="plan-details">
-                    <h4>${item.title} Roadmap - Select your actions:</h4>
-                    ${item.steps.map(s => `
-                        <label class="plan-item">
-                            <input type="checkbox" data-axis="${item.title}" data-text="${s.text}" data-time="${s.time}">
-                            <div><strong>${s.time}</strong> <span class="tag ${s.diff}">${s.diff}</span><br>${s.text}</div>
-                        </label>
-                    `).join('')}
-                </div>`;
-        });
-    }
-
-    function togglePlan(axis) {
-        const el = document.getElementById(`plan-${axis}`);
-        el.style.display = el.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function sendReport() {
-        const email = document.getElementById('userEmail').value;
-        if(!email) { alert("Please enter an email address."); return; }
-        
-        const selected = document.querySelectorAll('input[type="checkbox"]:checked');
-        if(selected.length === 0) { alert("Please select at least one action item to include in your report."); return; }
-
-        let reportBody = `MY IKIGAI CAREER ROADMAP\n\nSCORES:\n`;
-        [1,2,3,4].forEach(a => reportBody += `- ${axisData[a].title}: ${scores[a]}/25\n`);
-        
-        reportBody += `\nSELECTED ACTION ITEMS:\n`;
-        selected.forEach(s => {
-            reportBody += `[ ] (${s.dataset.axis}) ${s.dataset.time}: ${s.dataset.text}\n`;
-        });
-
-        reportBody += `\nGenerated via Ikigai Beta Discovery Tool.`;
-
-        const mailtoUrl = `mailto:${email}?subject=My Personal Career Roadmap&body=${encodeURIComponent(reportBody)}`;
-        window.location.href = mailtoUrl;
-    }
-</script>
-</body>
-</html>
+        1: { title: "What You
